@@ -1,0 +1,11 @@
+node_modules
+dist
+.DS_Store
+.env
+.env.*
+*.log
+.npm-cache
+
+# Utility XML exports (personal usage data) — keep local only
+sample_files/*
+!sample_files/README.md

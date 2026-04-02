@@ -1,0 +1,13 @@
+# Copy to dev.tfvars (gitignored) and edit for your cluster.
+#   cp dev.tfvars.example dev.tfvars
+
+environment         = "dev"
+kube_context        = "your-kubectl-context-dev"
+gateway_host        = "10.0.0.1"
+ingress_path_prefix = "gas-dashboard"
+namespace           = "utility"
+app_name            = "utility-usage-dashboard"
+image               = "YOUR_REGISTRY/utility-usage-dashboard:1.0.0"
+image_pull_policy   = "Always"
+dashboard_username  = "admin"
+dashboard_password  = "change-me-strong-password"

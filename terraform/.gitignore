@@ -1,0 +1,20 @@
+.terraform/
+.terraform.tfstate.lock.info
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# State (including workspace backend directories)
+*.tfstate
+*.tfstate.*
+terraform.tfstate.d/
+**/*.tfstate
+**/*.tfstate.*
+
+# Local variable files (tracked examples use *.tfvars.example)
+*.tfvars
+*.auto.tfvars
+!*.tfvars.example
