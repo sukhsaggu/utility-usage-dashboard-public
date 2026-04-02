@@ -11,7 +11,7 @@ Personal portfolio project: a small **React** dashboard for **Green Button / ESP
 
 ## Stack
 
-React 18, Vite 5, Recharts, Express, Docker (`node:20-alpine`), Terraform Kubernetes provider, Traefik ingress class (see note below)
+React 18, Vite 6, Recharts, Express, Docker (`node:20-alpine`), Terraform Kubernetes provider, Traefik ingress class (see note below)
 
 ## Quick start (local)
 
@@ -22,16 +22,18 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173 and load an XML file.
+Open http://localhost:5173/ and load an XML file (drop a Green Button XML or use files under `sample_files/` on your machine).
 
-**Auth off locally** unless you run the production server:
+**Production server locally** (built SPA + API, same as the container). The process defaults to **port 80** to match Kubernetes; on a workstation that often conflicts with other services or requires elevated privileges, so use an unprivileged port:
 
 ```bash
 npm run build
-DASHBOARD_USER=admin DASHBOARD_PASSWORD=secret npm start
+PORT=8080 DASHBOARD_USER=admin DASHBOARD_PASSWORD=secret npm start
 ```
 
-Then open http://localhost:80/gas-dashboard/ (or map another host port to the container).
+Then open http://localhost:8080/gas-dashboard/ .
+
+Without `DASHBOARD_USER` / `DASHBOARD_PASSWORD`, auth is off and the same URL still works.
 
 ## Deploy prerequisites
 
@@ -48,7 +50,7 @@ Use **only** the **`dev`** and **`prod`** workspaces for this stack, not **`defa
 cd terraform
 cp dev.tfvars.example dev.tfvars
 cp prod.tfvars.example prod.tfvars
-# Edit dev.tfvars / prod.tfvars: kube_context, gateway_host, image, strong passwords, etc.
+# Edit dev.tfvars / prod.tfvars: kube_context, gateway_host, image (registry your cluster can pull), strong passwords, etc.
 
 terraform init
 terraform workspace new dev 2>/dev/null || true
@@ -58,16 +60,19 @@ terraform plan -var-file=dev.tfvars
 terraform apply -var-file=dev.tfvars
 ```
 
-Validate after deploy:
+`terraform plan` / `apply` need a working **kubectl** context (see `kube_context` in tfvars) and a reachable cluster.
+
+Validate after deploy (replace host with `gateway_host` from tfvars):
 
 ```bash
 curl -s "http://YOUR_GATEWAY/gas-dashboard/api/environment"
-# e.g. {"environment":"dev","version":"1.0.0"}
 ```
+
+In Kubernetes you should see `environment` matching tfvars and **`version`** when the image tag is set (Terraform passes `APP_IMAGE_VERSION`). On a local `npm start` without that env var, the response is typically `{"environment":"local"}` with no `version` field.
 
 ## Build, push registry, apply (script)
 
-From the repository root, with Docker running:
+From the repository root, with Docker running. Create **`terraform/dev.tfvars`** (and **`prod.tfvars`** if you deploy prod) from the `.example` files first; the script updates the `image` line and runs Terraform.
 
 ```bash
 export DOCKERHUB_USER=yourregistryuser
