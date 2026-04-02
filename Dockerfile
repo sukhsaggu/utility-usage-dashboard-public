@@ -1,5 +1,5 @@
 # Stage 1: build
-FROM node:20-alpine AS builder
+FROM node:25-alpine AS builder
 # Patch OS packages (e.g. zlib) and use current npm so Trivy does not flag the image’s bundled CLI.
 RUN apk update && apk upgrade --no-cache && npm install -g npm@latest
 WORKDIR /app
@@ -11,7 +11,7 @@ ENV VITE_BASE_PATH=/gas-dashboard/
 RUN npm run build
 
 # Stage 2: Node server — serves SPA + API so data is shared across browsers
-FROM node:20-alpine
+FROM node:25-alpine
 RUN apk update && apk upgrade --no-cache && npm install -g npm@latest
 WORKDIR /app
 COPY --from=builder /app/dist ./dist
