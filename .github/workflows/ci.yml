@@ -9,6 +9,10 @@ on:
 jobs:
   build-and-audit:
     runs-on: ubuntu-latest
+    # Run composite JS actions (e.g. actions/cache via setup-node) on Node 24 — see
+    # https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     permissions:
       contents: read
     steps:
@@ -16,6 +20,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
+          # App + Docker image use Node 20; keep CI aligned unless you bump the Dockerfile.
           node-version: "20"
           cache: "npm"
 
