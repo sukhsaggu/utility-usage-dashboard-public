@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173/ and load an XML file (drop a Green Button XML or use files under `sample_files/` on your machine).
+Open http://localhost:5173/ and load an XML file (drop a Green Button XML or use files under `sample_files/` on your machine). **No login** in this mode: the Express API (and optional auth) is not running on the Vite dev server, so the UI skips the sign-in screen.
 
 **Production server locally** (built SPA + API, same as the container). The process defaults to **port 80** to match Kubernetes; on a workstation that often conflicts with other services or requires elevated privileges, so use an unprivileged port:
 

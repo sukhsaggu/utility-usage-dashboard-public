@@ -6,9 +6,18 @@ const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_UR
 
 async function fetchSession() {
   const base = API_BASE.replace(/\/$/, '')
-  const res = await fetch(`${base}/api/session`, { credentials: 'include' })
-  if (!res.ok) return { authenticated: false, authDisabled: false }
-  return res.json()
+  try {
+    const res = await fetch(`${base}/api/session`, { credentials: 'include' })
+    // Vite dev / preview: no Express API on this origin → 404. Treat as "auth off" like the server when DASHBOARD_USER is unset.
+    if (res.status === 404) {
+      return { authenticated: true, authDisabled: true }
+    }
+    if (!res.ok) return { authenticated: false, authDisabled: false }
+    return await res.json()
+  } catch {
+    // Network / CORS / bad JSON — no usable session API; same as local-only dev.
+    return { authenticated: true, authDisabled: true }
+  }
 }
 
 export default function AuthShell() {
