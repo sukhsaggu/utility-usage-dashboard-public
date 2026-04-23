@@ -43,7 +43,7 @@ jobs:
           tags: utility-usage-dashboard:ci
 
       - name: Run Trivy (critical + high)
-        uses: aquasecurity/trivy-action@v0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: utility-usage-dashboard:ci
           format: table
